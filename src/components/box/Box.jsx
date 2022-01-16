@@ -8,8 +8,8 @@ const className ={
 }
 
     return (
-        <div className='box'>
-            
+        <div className={Object.values(className).join(' ')}>
+            {props.children}
         </div>
     )
 }

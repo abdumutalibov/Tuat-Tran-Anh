@@ -1,10 +1,32 @@
-import { data } from "../constants";
+import { colors, data } from "../constants";
 import React from "react";
-import Box from "../components/box/Box";
 import DashboardWrapper, {
   DashboardWrapperMain,
   DashboardWrapperRight,
 } from "../components/dashboard-wrapper/DashboardWrapper";
+import SummaryBox, { SummaryBoxSpecial } from "../components/summary-box/SummaryBox";
+import Box from "../components/box/Box";
+
+import {
+  Chart as ChartJs,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  BarElement,
+  Title,
+  Legend,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
+import OverallList from "../components/overall-list/OverallList";
+import RevenueList from "../components/revenue-list/RevenueList";
+ChartJs.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  BarElement,
+  Title,
+  Legend,
+)
 const Dashboard = () => {
   return (
     <DashboardWrapper>
@@ -14,16 +36,85 @@ const Dashboard = () => {
             <div className="row">
               {data.summary.map((item, index) => (
                 <div key={`summary-${index}`} className="col-6 col-md-6 col-sm-12 mb">
-                  <Box />
+                  <SummaryBox item={item} />
                 </div>
               ))}
             </div>
           </div>
+          <div className="col-4 hide-md">
+            <SummaryBoxSpecial item={data.revenueSummary}/>
+          </div>
         </div>
+          <div className="row">
+            <div className="col-12">
+              <Box>
+                <RevenueByMonthChart/>
+              </Box>
+            </div>
+          </div>
       </DashboardWrapperMain>
-      <DashboardWrapperRight>DashboardWrapperRight</DashboardWrapperRight>
+      <DashboardWrapperRight>
+        <div className="title mb">Overall</div>
+        <div className=" mb">
+<OverallList/>
+        </div>
+        <div className="title mb">Revenue by channel</div>
+        <div className="mb">
+          <RevenueList/>
+        </div>
+      </DashboardWrapperRight>
     </DashboardWrapper>
   );
 };
 
 export default Dashboard;
+
+const RevenueByMonthChart = () => {
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      xAxes: {
+        grid:{
+          display: false,
+          drawBorder: false
+        }
+      }
+    },
+    plugins:{
+      legend:{
+        display: false
+      },
+      title:{
+        display: false
+      }
+    },
+    elements: {
+      bar:{
+        backgroundColor: colors.orange,
+        borderRadius: 20,
+        borderSkipped: 'bottom'
+      }
+    }
+  }
+  const chartData = {
+    labels: data.revenueByMonths.labels,
+    datasets:[
+      {
+        labels:'Revenue',
+        data: data.revenueByMonths.data
+      }
+    ]
+  }
+  return (
+    <>  
+     <div className="title mb">
+    Revenue by month
+      </div>
+    <div>
+<Bar options={chartOptions} data={chartData} height={`300px`}/>
+    </div>
+    </>
+ 
+  )
+}
