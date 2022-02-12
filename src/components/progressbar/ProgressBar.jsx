@@ -4,7 +4,7 @@ const ProgressBar = ({value}) => {
     const barInnerRef = useRef()
 
     useEffect(() => {
-        barInnerRef.current.style.width = `${value}%`
+        // barInnerRef.current.style.width = `${value}`
     }, [])
     return (
         <div className='progress-bar'>
